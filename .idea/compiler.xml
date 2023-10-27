@@ -6,13 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Content_Service" />
+        <module name="Content_Service (1)" />
+        <module name="Content_Service (2)" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Content_Service" target="11" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Content_Service" options="-parameters" />
+      <module name="Content_Service (1)" options="-parameters" />
+      <module name="Content_Service (2)" options="-parameters" />
     </option>
   </component>
 </project>
