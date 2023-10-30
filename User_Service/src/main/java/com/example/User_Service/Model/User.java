@@ -15,9 +15,27 @@ public class User {
     private String lastName;
     private String emailId;
     private String phoneNumber;
+    private String password;
     private String userType;
 
     private LocalDateTime userSignUpDate;
+
+    private LocalDateTime lastModifiedDate;
+
+
+    public User(String emailId, String password) {
+        this.emailId = emailId;
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 
     public String getId() {
         return id;
@@ -83,5 +101,5 @@ public class User {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    private LocalDateTime lastModifiedDate;
+
 }
