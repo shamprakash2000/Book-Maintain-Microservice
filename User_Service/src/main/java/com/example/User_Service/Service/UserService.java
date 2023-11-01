@@ -18,8 +18,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 @Service
 @Lazy
@@ -44,48 +48,117 @@ public class UserService{
 
 
     public ResponseEntity<?> signUp(User user) {
+        if(user==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("User object is empty", null));
+        }
+        if(user.getEmailId().isBlank() || user.getPassword().isBlank() || user.getPhoneNumber().isBlank() || user.getFirstName().isBlank()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Some of the user field is empty", null));
+        }
+        String emailId= user.getEmailId().trim().toLowerCase();
+        String firstName=user.getFirstName().trim();
+        String lastName=user.getLastName().trim();
+        String phoneNumber=user.getPhoneNumber().trim();
+        user.setEmailId(emailId);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPhoneNumber(phoneNumber);
+        if(checkEmailIdExists(emailId)){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Response("Email Id already exists", null));
+        }
+        if(checkPhoneNumberExists(phoneNumber)){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Response("Phone number already exists", null));
+
+        }
 
         user.setLastModifiedDate(LocalDateTime.now());
         user.setUserSignUpDate(LocalDateTime.now());
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        System.out.println(hashedPassword);
         user.setPassword(hashedPassword);
-        User savedUser= userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.OK).body(new Response("User inserted to database successfully", savedUser));
+        user.setRole("USER");
+        try {
+          userRepository.save(user);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response("Unable to insert data to database", null));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new Response("User details inserted to database successfully", null));
+
+
+    }
+
+    public boolean checkEmailIdExists(String emailId){
+       return userRepository.existsByEmailId(emailId);
+    }
+
+    public boolean checkPhoneNumberExists(String phoneNumber){
+        return userRepository.existsByPhoneNumber(phoneNumber);
     }
 
     public ResponseEntity<?> login(User user){
-        System.out.println("inside auth");
-
-        try {
-            System.out.println("before auth");
-
-
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmailId(), user.getPassword()));
-            System.out.println("after auth");
-
-        } catch (AuthenticationException e) {
-            System.out.println("catch");
-
-            //throw new Exception("Incorect username and password ",e);
-            return new ResponseEntity("password mismatch", HttpStatus.BAD_REQUEST);
+        String emailId= user.getEmailId().trim().toLowerCase();
+        if(!userRepository.existsByEmailId(emailId)){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Response("Email Id does not exists", null));
         }
 
-        System.out.println("outside catch");
-        final UserDetails userDetails = myUserDetailsService.loadUserByUsername(user.getEmailId());
-        //Response tempUser= userService.getUser(user.getEmailId());
-        //User temp= (User) tempUser.getResponseObject();
-        User temp= getUser(user.getEmailId());
-        System.out.println(temp.getFirstName());
-        final String jwt = jwtUtil.generateToken(userDetails);
-        return new ResponseEntity(jwt, HttpStatus.ACCEPTED);
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmailId(), user.getPassword()));
+
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("Password mismatch", null));
+        }
+
+        User savedUser= getUser(user.getEmailId());
+        final String jwt = jwtUtil.generateToken(savedUser.getEmailId(),savedUser.getRole());
+        Map<String, String> hashMap = new HashMap<>();
+        hashMap.put("JWT", jwt);
+        Response response=new Response("User logged in successfully", hashMap);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     public User getUser(String emailId){
-        User user=userRepository.findByEmailId("bhagya@gmail.com");
-       //return new Response("user deatails fetch",user);
-        return user;
+
+        try{
+          User user= userRepository.findByEmailId(emailId);
+            return user;
+        }
+        catch (Exception e){
+            throw new RuntimeException("Unable to fetch details");
+        }
+
     }
 
 
+    public ResponseEntity<?> fetchUserDetails(HttpServletRequest request) {
+        String bearer=request.getHeader("Authorization");
+        String jwt=bearer.substring(7);
+        String emailId = jwtUtil.extractAllClaims(jwt).get("emailId",String.class);
+        User user=getUser(emailId);
+        user.setPassword("");
+        return ResponseEntity.status(HttpStatus.OK).body(new Response("User details fetched successfully",user ));
+    }
+
+    public ResponseEntity<?> updatePhoneNumber(User user, HttpServletRequest request) {
+
+        Response response= (Response) fetchUserDetails(request).getBody();
+        User tempUser=(User) response.getResponseObject();
+        if(!checkEmailIdExists(tempUser.getEmailId())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Response("The user you want to update doesnot exist in the database", null));
+        }
+        if(checkPhoneNumberExists(user.getPhoneNumber())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Response("Phone number already exists", null));
+        }else{
+            String phoneNumber=user.getPhoneNumber().trim();
+            tempUser.setPhoneNumber(phoneNumber);
+            tempUser.setLastModifiedDate(LocalDateTime.now());
+            try {
+                userRepository.save(tempUser);
+            }
+            catch (Exception e){
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response("Unable to insert data to database", null));
+            }
+            User updatedUser=getUser(tempUser.getEmailId());
+            return ResponseEntity.status(HttpStatus.OK).body(new Response("Phone number updated successfully.",updatedUser ));
+        }
+
+    }
 }

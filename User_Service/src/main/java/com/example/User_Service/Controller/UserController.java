@@ -8,6 +8,7 @@ import com.example.User_Service.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
+
+
 
 @RestController
 @RequestMapping("userService/api")
@@ -35,20 +38,20 @@ public class UserController {
     private JwtUtil jwtUtil;
 
 
-
     @GetMapping("/health")
     public ResponseEntity<?> health(HttpServletRequest request) {
-
-        System.out.println("health"+request.getHeader("Authorization"));
-//        String hashedPassword = BCrypt.hashpw("password", BCrypt.gensalt());
-//        System.out.println(hashedPassword);
         String bearer=request.getHeader("Authorization");
-
-//        return ResponseEntity.status(HttpStatus.OK).body("User Service up and Running");
-        //Optional<User> user= Optional.ofNullable((User) jwtUtil.extractAllClaims(bearer.substring(7)).get("user"));
         String s=bearer.substring(7);
-        String str = jwtUtil.extractAllClaims(s).get("userType",String.class);
-        return ResponseEntity.status(HttpStatus.OK).body(str);
+        String str = jwtUtil.extractAllClaims(s).get("role",String.class);
+        System.out.println("line 45 role: "+str);
+        if (str.equals("ADMIN")) {
+
+            return ResponseEntity.status(HttpStatus.OK).body("User Service Up and Running...!");
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unable to access");
+        }
+
     }
 
 
@@ -59,9 +62,29 @@ public class UserController {
     }
 
 
-    @PostMapping("/auth")
-    public ResponseEntity auth(@RequestBody User user) throws Exception {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user) throws Exception {
 
         return userService.login(user);
     }
+
+
+    @GetMapping("/fetchMyDetails")
+    public ResponseEntity<?> fetchUserDetails(HttpServletRequest request){
+        return userService.fetchUserDetails(request);
+    }
+
+    @PatchMapping("/updatePhoneNumber")
+    public ResponseEntity<?> updatePhoneNumber(@RequestBody User user,HttpServletRequest request){
+        return userService.updatePhoneNumber(user,request);
+    }
+
+
+    //get user details
+
+
+    //update user details
+
+
+    //delete(based on some scenario)
 }

@@ -1,8 +1,11 @@
 package com.example.User_Service.Response;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Response {
     private String message;
+
     private Object responseObject;
 
 

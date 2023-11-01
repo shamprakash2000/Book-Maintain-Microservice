@@ -7,6 +7,7 @@ import com.example.User_Service.Util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -36,15 +37,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if(authorizationHeader!=null && authorizationHeader.startsWith("Bearer ")){
             jwt=authorizationHeader.substring(7);
-                try{
-                    userName = jwtUtil.extractUsername(jwt);
-                }
-                catch(Exception e){
+                    try{
+                        userName = jwtUtil.extractUsername(jwt);
+                    }
+                    catch (Exception e){
+                        response.getWriter().write("\"Access denied: You don't have permission to access this resource\"");
+                        throw new RuntimeException("Issue with extracting username from JWT.");
 
-                }
-
-
-
+                    }
 
         }
         if(userName !=null && SecurityContextHolder.getContext().getAuthentication()==null){
@@ -53,8 +53,12 @@ public class JwtFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+//                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//                System.out.println("Current User: " + authentication.getName());
+//                System.out.println("Authorities: " + authentication.getAuthorities());
             }
         }
+
         filterChain.doFilter(request,response);
     }
 }

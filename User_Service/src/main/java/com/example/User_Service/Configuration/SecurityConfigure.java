@@ -3,7 +3,6 @@ package com.example.User_Service.Configuration;
 
 import com.example.User_Service.Filter.JwtFilter;
 import com.example.User_Service.Service.MyUserDetailsService;
-import com.example.User_Service.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,13 +13,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
-//@Configuration
+@Configuration
 @EnableWebSecurity
 public class SecurityConfigure extends WebSecurityConfigurerAdapter {
 
@@ -36,11 +32,17 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter {
 //        return new CustomAccessDeniedHandler();
 //    }
 
+//    @Bean
+//    public AccessDeniedHandler accessDeniedHandler() {
+//        return new CustomAccessDeniedHandler();
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().antMatchers("/userService/api/auth","/userService/api/signUp").permitAll().anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+        http.csrf().disable().authorizeRequests().antMatchers("/userService/api/login","/userService/api/signUp").permitAll()
+                .anyRequest().authenticated().and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        //http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
         http.addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
 
     }
@@ -48,6 +50,7 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        super.configure(auth);
+
 
 
         auth.userDetailsService(myUserDetailsService);

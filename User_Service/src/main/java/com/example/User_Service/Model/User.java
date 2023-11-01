@@ -16,12 +16,14 @@ public class User {
     private String emailId;
     private String phoneNumber;
     private String password;
-    private String userType;
+    private String role;
 
     private LocalDateTime userSignUpDate;
 
     private LocalDateTime lastModifiedDate;
 
+    public User() {
+    }
 
     public User(String emailId, String password) {
         this.emailId = emailId;
@@ -77,12 +79,12 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getUserType() {
-        return userType;
+    public String getRole() {
+        return role;
     }
 
-    public void setUserType(String userType) {
-        this.userType = userType;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public LocalDateTime getUserSignUpDate() {
