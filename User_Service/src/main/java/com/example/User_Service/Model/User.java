@@ -22,6 +22,8 @@ public class User {
 
     private LocalDateTime lastModifiedDate;
 
+    private boolean isUserDeleted;
+
     public User() {
     }
 
@@ -103,5 +105,11 @@ public class User {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public boolean isUserDeleted() {
+        return isUserDeleted;
+    }
 
+    public void setIsUserDeleted(boolean userDeleted) {
+        isUserDeleted = userDeleted;
+    }
 }

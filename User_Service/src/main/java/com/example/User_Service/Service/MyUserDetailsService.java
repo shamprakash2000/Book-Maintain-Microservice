@@ -22,9 +22,15 @@ public class MyUserDetailsService  implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try{
             User user =userRepository.findByEmailId(username);
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(user.getRole()));
-            return new org.springframework.security.core.userdetails.User(user.getEmailId(),user.getPassword(),authorities);
+            if(!user.isUserDeleted()){
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(new SimpleGrantedAuthority(user.getRole()));
+                return new org.springframework.security.core.userdetails.User(user.getEmailId(),user.getPassword(),authorities);
+            }
+            else{
+                return new org.springframework.security.core.userdetails.User("","",new ArrayList<>());
+            }
+
         }
         catch (Exception e){
             throw new RuntimeException("Unable to fetch load user details.");

@@ -3,6 +3,7 @@ package com.example.User_Service.Filter;
 
 
 import com.example.User_Service.Service.MyUserDetailsService;
+import com.example.User_Service.Service.TokenBlacklistService;
 import com.example.User_Service.Util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -47,7 +51,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     }
 
         }
-        if(userName !=null && SecurityContextHolder.getContext().getAuthentication()==null){
+        if(userName !=null && SecurityContextHolder.getContext().getAuthentication()==null && !tokenBlacklistService.isTokenBlacklisted(jwt)){
            UserDetails userDetails=this.myUserDetailsService.loadUserByUsername(userName);
             if(jwtUtil.validateToken(jwt,userDetails)){
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());

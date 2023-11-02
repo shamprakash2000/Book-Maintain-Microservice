@@ -3,6 +3,7 @@ package com.example.User_Service.Controller;
 
 import com.example.User_Service.Model.User;
 import com.example.User_Service.Response.Response;
+import com.example.User_Service.Service.TokenBlacklistService;
 import com.example.User_Service.Service.UserService;
 import com.example.User_Service.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
+
 
     @GetMapping("/health")
     public ResponseEntity<?> health(HttpServletRequest request) {
@@ -44,6 +48,9 @@ public class UserController {
         String s=bearer.substring(7);
         String str = jwtUtil.extractAllClaims(s).get("role",String.class);
         System.out.println("line 45 role: "+str);
+//        tokenBlacklistService.blacklistToken(s);
+//        tokenBlacklistService.isTokenBlacklisted(s);
+        System.out.println("line 53");
         if (str.equals("ADMIN")) {
 
             return ResponseEntity.status(HttpStatus.OK).body("User Service Up and Running...!");
@@ -71,6 +78,9 @@ public class UserController {
 
     @GetMapping("/fetchMyDetails")
     public ResponseEntity<?> fetchUserDetails(HttpServletRequest request){
+//        String bearer=request.getHeader("Authorization");
+//        String s=bearer.substring(7);
+//        tokenBlacklistService.isTokenBlacklisted(s);
         return userService.fetchUserDetails(request);
     }
 
@@ -79,6 +89,15 @@ public class UserController {
         return userService.updatePhoneNumber(user,request);
     }
 
+    @GetMapping("/logout")
+    public ResponseEntity logout(HttpServletRequest request){
+        return userService.logout(request);
+    }
+
+    @PatchMapping("/deleteUser")
+    public ResponseEntity deleteUser(@RequestBody User user,HttpServletRequest request){
+        return userService.deleteUser(user,request);
+    }
 
     //get user details
 
