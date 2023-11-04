@@ -19,7 +19,7 @@ public class MyUserDetailsService  implements UserDetailsService {
         System.out.println(username+" line 19");
 //        User user =userRepository.findByEmailId(username);
 //        return new org.springframework.security.core.userdetails.User(user.getEmailId(),user.getPassword(),new ArrayList<>());
-        return new org.springframework.security.core.userdetails.User("bhagya@gmail.com","pass",new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User("user@gmail.com","pass",new ArrayList<>());
 
     }
 }

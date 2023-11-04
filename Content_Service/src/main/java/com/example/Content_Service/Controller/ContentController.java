@@ -40,7 +40,8 @@ public class ContentController {
     }
 
     @PostMapping("/uploadCSV")
-    public ResponseEntity<?> uploadCSV(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadCSV(@RequestPart("file") MultipartFile file) {
+        System.out.println("line 44 in content controller");
        return contentService.insertContentFromCSV(file);
     }
 

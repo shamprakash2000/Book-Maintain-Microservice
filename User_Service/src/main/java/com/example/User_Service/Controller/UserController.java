@@ -7,6 +7,7 @@ import com.example.User_Service.Service.TokenBlacklistService;
 import com.example.User_Service.Service.UserService;
 import com.example.User_Service.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,6 +43,12 @@ public class UserController {
     private TokenBlacklistService tokenBlacklistService;
 
 
+    @GetMapping("")
+    public ResponseEntity<?> check(){
+        return ResponseEntity.status(HttpStatus.OK).body("inside user service");
+    }
+
+
     @GetMapping("/health")
     public ResponseEntity<?> health(HttpServletRequest request) {
         String bearer=request.getHeader("Authorization");
@@ -71,6 +78,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) throws Exception {
+
 
         return userService.login(user);
     }

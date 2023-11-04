@@ -44,6 +44,8 @@ public class ContentService {
                 Content savedContent = contentRepository.save(content);
                 return ResponseEntity.status(HttpStatus.OK).body(new Response("Content inserted to database successfully", savedContent));
             } catch (Exception e) {
+                e.printStackTrace();
+
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unable to insert the content to database.");
             }
 

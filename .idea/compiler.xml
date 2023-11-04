@@ -6,19 +6,25 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Content_Service (1)" />
-        <module name="Content_Service (2)" />
+        <module name="Eureka-Server" />
+        <module name="Api-Gateway" />
+        <module name="Content_Service" />
+        <module name="User_Service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Content_Service" target="11" />
+      <module name="Content_Service (1)" target="11" />
+      <module name="Content_Service (2)" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Api-Gateway" options="-parameters" />
       <module name="Content_Service" options="-parameters" />
       <module name="Content_Service (1)" options="-parameters" />
       <module name="Content_Service (2)" options="-parameters" />
+      <module name="Eureka-Server" options="-parameters" />
+      <module name="User_Service" options="-parameters" />
     </option>
   </component>
 </project>
