@@ -1,6 +1,6 @@
 package com.example.User_Interaction_Service.Repository;
 
-import com.example.User_Interaction_Service.Model.LikeEvent;
+
 import com.example.User_Interaction_Service.Model.ReadEvent;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

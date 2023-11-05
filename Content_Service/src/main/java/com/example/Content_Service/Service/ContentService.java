@@ -26,11 +26,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -40,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -303,6 +306,23 @@ public class ContentService {
     public ResponseEntity getNewContent() {
         Page<Content> page=getNonDeletedContentsPaged(0,20);
         return ResponseEntity.status(HttpStatus.OK).body(new Response("Fetched new content successfully",page.getContent()));
+    }
+
+    public ResponseEntity fetchTopContents() {
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List> response = restTemplate.exchange(
+                "http://localhost:8083/userInteractionService/api/topContents",
+                HttpMethod.GET, null, List.class);
+
+        List<String> list=response.getBody();
+        List<Content> contentList=new ArrayList<>();
+        for (String contentId:list) {
+           Optional<Content> tempContent= contentRepository.findById(contentId);
+           contentList.add(tempContent.get());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new Response("Fetched top content successfully",contentList));
+
     }
 }
 

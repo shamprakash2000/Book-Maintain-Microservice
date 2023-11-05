@@ -75,4 +75,9 @@ public class ContentController {
     public ResponseEntity<?> uploadDataFromCSVToDB(@RequestPart("file") MultipartFile file,HttpServletRequest request) {
         return contentService.uploadDataFromCSVToDB(file,request);
     }
+
+    @GetMapping("/fetchTopContents")
+    public ResponseEntity fetchTopContents(){
+        return contentService.fetchTopContents();
+    }
 }

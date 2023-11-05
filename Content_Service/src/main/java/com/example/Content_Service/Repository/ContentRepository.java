@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ContentRepository extends MongoRepository<Content, String> {
     boolean existsByTitle(String title);
-    Optional<Content> findById(String contentId);
+
 
     Content findByTitle(String tilte);
 

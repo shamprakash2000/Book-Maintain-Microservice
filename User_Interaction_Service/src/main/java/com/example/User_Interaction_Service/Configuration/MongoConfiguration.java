@@ -1,5 +1,6 @@
 package com.example.User_Interaction_Service.Configuration;
 
+import com.example.User_Interaction_Service.Model.InteractionCount;
 import com.example.User_Interaction_Service.Model.LikeEvent;
 import com.example.User_Interaction_Service.Model.ReadEvent;
 import com.example.User_Interaction_Service.Repository.LikeEventRepository;
@@ -36,6 +37,10 @@ public class MongoConfiguration {
         IndexOperations readEventIndexOps=mongoTemplate.indexOps(ReadEvent.class);
         Index readIndex = new Index().on("contentId", Sort.Direction.ASC).on("userEmailId", Sort.Direction.ASC).unique();
         readEventIndexOps.ensureIndex(readIndex);
+
+//        IndexOperations interactionIndexOps=mongoTemplate.indexOps(InteractionCount.class);
+//        Index interactionIndex = new Index().on("contentId", Sort.Direction.ASC).unique();
+//        interactionIndexOps.ensureIndex(interactionIndex);
 
 
     }

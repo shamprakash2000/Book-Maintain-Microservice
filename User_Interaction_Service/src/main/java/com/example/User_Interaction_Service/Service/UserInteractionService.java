@@ -1,8 +1,10 @@
 package com.example.User_Interaction_Service.Service;
 
 
+import com.example.User_Interaction_Service.Model.InteractionCount;
 import com.example.User_Interaction_Service.Model.LikeEvent;
 import com.example.User_Interaction_Service.Model.ReadEvent;
+import com.example.User_Interaction_Service.Repository.InteractionCountRepository;
 import com.example.User_Interaction_Service.Repository.LikeEventRepository;
 import com.example.User_Interaction_Service.Repository.ReadEventRepository;
 import com.example.User_Interaction_Service.Response.Response;
@@ -25,6 +27,9 @@ public class UserInteractionService {
 
     @Autowired
     private ReadEventRepository readEventRepository;
+
+    @Autowired
+    private InteractionCountRepository interactionCountRepository;
 
 
     @Autowired
@@ -115,41 +120,11 @@ public class UserInteractionService {
 
     public List<String> fetchTopContents(){
         List<String> topContents = new ArrayList<>();
+        List<InteractionCount> list=interactionCountRepository.findAllByOrderByCountDesc();
 
-
-        List<LikeEvent> likeEvents = likeEventRepository.findAll();
-
-
-        List<ReadEvent> readEvents = readEventRepository.findAll();
-
-
-        Map<String, Integer> contentInteractions = new HashMap<>();
-
-
-        for (LikeEvent likeEvent : likeEvents) {
-            String contentId = likeEvent.getContentId();
-            contentInteractions.put(contentId, contentInteractions.getOrDefault(contentId, 0) + 1);
+        for (InteractionCount interactionCount:list) {
+            topContents.add(interactionCount.getContentId());
         }
-
-        for (ReadEvent readEvent : readEvents) {
-            String contentId = readEvent.getContentId();
-            contentInteractions.put(contentId, contentInteractions.getOrDefault(contentId, 0) + 1);
-        }
-        Map<String, Integer> sortedMap = contentInteractions.entrySet()
-                .stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                ));
-
-        for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
-            String contentId = entry.getKey();
-            topContents.add(contentId);
-        }
-
         return topContents;
     }
 
