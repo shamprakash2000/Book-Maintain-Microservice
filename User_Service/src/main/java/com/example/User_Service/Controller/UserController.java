@@ -86,9 +86,7 @@ public class UserController {
 
     @GetMapping("/fetchMyDetails")
     public ResponseEntity<?> fetchUserDetails(HttpServletRequest request){
-//        String bearer=request.getHeader("Authorization");
-//        String s=bearer.substring(7);
-//        tokenBlacklistService.isTokenBlacklisted(s);
+
         return userService.fetchUserDetails(request);
     }
 

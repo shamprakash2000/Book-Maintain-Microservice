@@ -42,18 +42,7 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-//    public String generateToken(UserDetails userDetails) {
-//        Map<String, Object> claims = new HashMap<>();
-////        userRepository.findById("653b400931b2921f0048458c");
-//
-////
-////       Optional<User> user=userRepository.findById("653bf95767e7e96406a6c6f0");
-////        System.out.println(user.get().getFirstName());
-////        User u=user.get();
-//////        claims.put("userType",u.getUserType());
-//
-//        return createToken(claims, userDetails.getUsername());
-//    }
+
 
     private String createToken(Map<String, Object> claims, String subject) {
 

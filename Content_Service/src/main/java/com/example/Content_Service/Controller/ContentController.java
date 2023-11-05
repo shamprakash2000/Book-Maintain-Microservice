@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -33,10 +34,39 @@ public class ContentController {
     }
 
     @PostMapping("/addContent")
-    public ResponseEntity<?> create(@RequestBody Content content){
+    public ResponseEntity<?> create(@RequestBody Content content, HttpServletRequest request){
         System.out.println("line 37");
-        return contentService.insertContent(content);
+        return contentService.insertContent(content,request);
 
+    }
+
+    @GetMapping("/get/{contentId}")
+    public ResponseEntity getContent(@PathVariable("contentId") String contentId){
+       return contentService.getContent(contentId);
+
+    }
+
+    //update
+    @PatchMapping("/updateStory/{contentId}")
+    public ResponseEntity<?> updateStory(@RequestBody Content content,@PathVariable("contentId") String contentId,HttpServletRequest request){
+        return contentService.updateStory(content,contentId,request);
+    }
+
+    @PatchMapping("/updateTitle/{contentId}")
+    public ResponseEntity<?> updateTitle(@RequestBody Content content,@PathVariable("contentId") String contentId,HttpServletRequest request){
+        return contentService.updateTitle(content,contentId,request);
+    }
+
+    //delete
+
+    @GetMapping("/deleteContent/{contentId}")
+    public ResponseEntity deleteContent(@PathVariable("contentId") String contentId,HttpServletRequest request){
+        return contentService.deleteContent(contentId,request);
+    }
+
+    @GetMapping("/getNewContent")
+    public ResponseEntity getNewContent(){
+        return contentService.getNewContent();
     }
 
     @PostMapping("/uploadCSV")
@@ -44,6 +74,5 @@ public class ContentController {
         System.out.println("line 44 in content controller");
        return contentService.insertContentFromCSV(file);
     }
-
 
 }

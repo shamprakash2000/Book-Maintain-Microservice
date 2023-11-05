@@ -16,22 +16,42 @@ public class Content {
     private String title;
     private String story;
     private LocalDateTime dateOfPublished;
-    private String userId;
+    private String userEmailId;
 
     private LocalDateTime lastModifiedDate;
 
+    private boolean isUploadedByAdmin;
 
-    // Constructors, getters, and setters
+    private boolean isContentDeleted;
+
+
+    public boolean isContentDeleted() {
+        return isContentDeleted;
+    }
+
+    public void setIsContentDeleted(boolean contentDeleted) {
+        isContentDeleted = contentDeleted;
+    }
+
+    public boolean isUploadedByAdmin() {
+        return isUploadedByAdmin;
+    }
+
+    public void setIsUploadedByAdmin(boolean uploadedByAdmin) {
+        isUploadedByAdmin = uploadedByAdmin;
+    }
+
+// Constructors, getters, and setters
 
     public Content() {
     }
 
-    public Content(String id, String title, String story, LocalDateTime dateOfPublished, String userId, LocalDateTime lastModifiedDate) {
+    public Content(String id, String title, String story, LocalDateTime dateOfPublished, String userEmailId, LocalDateTime lastModifiedDate) {
         this.id = id;
         this.title = title;
         this.story = story;
         this.dateOfPublished = dateOfPublished;
-        this.userId = userId;
+        this.userEmailId = userEmailId;
         this.lastModifiedDate = lastModifiedDate;
     }
 
@@ -67,12 +87,12 @@ public class Content {
         this.dateOfPublished = dateOfPublished;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getuserEmailId() {
+        return userEmailId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setuserEmailId(String userEmailId) {
+        this.userEmailId = userEmailId;
     }
 
     public LocalDateTime getLastModifiedDate() {

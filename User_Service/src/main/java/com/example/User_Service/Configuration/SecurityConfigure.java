@@ -43,7 +43,8 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
-        http.addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
+       http.addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterAfter(jwtFilter,UsernamePasswordAuthenticationFilter.class);
 
     }
 

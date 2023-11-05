@@ -46,7 +46,13 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
     public Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        try{
+            return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        }
+        catch (Exception e){
+            throw new RuntimeException("invalid token parsing");
+        }
+
     }
 
     private Boolean isTokenExpired(String token) {

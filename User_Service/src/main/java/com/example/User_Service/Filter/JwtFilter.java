@@ -45,9 +45,13 @@ public class JwtFilter extends OncePerRequestFilter {
                         userName = jwtUtil.extractUsername(jwt);
                     }
                     catch (Exception e){
-                        response.getWriter().write("\"Access denied: You don't have permission to access this resource\"");
+                        System.out.println("inside catch line 48");
+                        response.setStatus(409);
+                        //response.getWriter().write("\"Access denied: You don't have permission to access this resource\"");
+                       // super.doFilter(request,response,filterChain);
                         throw new RuntimeException("Issue with extracting username from JWT.");
 
+//                        filterChain.doFilter(request,response);
                     }
 
         }
