@@ -1,6 +1,5 @@
 //package com.example.Content_Service.Filter;
 //
-//import com.example.Content_Service.Service.MyUserDetailsService;
 //import com.example.Content_Service.Util.JwtUtil;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,8 +18,8 @@
 //
 //@Component
 //public class JwtFilter extends OncePerRequestFilter {
-//    @Autowired
-//    private MyUserDetailsService myUserDetailsService;
+////    @Autowired
+////    private MyUserDetailsService myUserDetailsService;
 //
 //    @Autowired
 //    private JwtUtil jwtUtil;

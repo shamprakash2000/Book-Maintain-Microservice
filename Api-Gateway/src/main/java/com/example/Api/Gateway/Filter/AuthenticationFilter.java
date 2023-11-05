@@ -1,5 +1,6 @@
 package com.example.Api.Gateway.Filter;
 
+import com.example.Api.Gateway.Service.TokenBlacklistService;
 import com.example.Api.Gateway.Util.JwtUtil;
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
+
     public AuthenticationFilter(){
         super(Config.class);
     }
@@ -35,6 +39,12 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 }
 
                 String authHeader = exchange.getRequest().getHeaders().get(org.springframework.http.HttpHeaders.AUTHORIZATION).get(0);
+                String JWT=authHeader.substring(7);
+                if(tokenBlacklistService.isTokenBlacklisted(JWT)){
+                    System.out.println("line 44");
+                    exchange.getResponse().setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
+                    return ServerResponse.status(HttpStatus.FORBIDDEN).build().then();
+                }
                 if(authHeader!=null && authHeader.startsWith("Bearer ")){
                     authHeader=authHeader.substring(7);
                     System.out.println("line 34 : "+authHeader);

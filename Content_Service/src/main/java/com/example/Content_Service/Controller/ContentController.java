@@ -34,7 +34,7 @@ public class ContentController {
 
     @PostMapping("/addContent")
     public ResponseEntity<?> create(@RequestBody Content content){
-
+        System.out.println("line 37");
         return contentService.insertContent(content);
 
     }
