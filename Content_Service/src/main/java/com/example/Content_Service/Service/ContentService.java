@@ -8,7 +8,17 @@ import com.example.Content_Service.Util.JwtUtil;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -43,6 +54,11 @@ public class ContentService {
 
     @Autowired
     MongoTemplate mongoTemplate;
+
+    @Autowired
+    private JobLauncher jobLauncher;
+    @Autowired
+    private Job job;
 
     public ResponseEntity<?> insertContent(Content content, HttpServletRequest request) {
 
@@ -94,39 +110,37 @@ public class ContentService {
         return role;
     }
 
-    public ResponseEntity<?> insertContentFromCSV(MultipartFile file) {
-
-        try  {
-            Reader reader = new InputStreamReader(file.getInputStream());
-            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader());
-
-            for (CSVRecord csvRecord : csvParser) {
-
-                //System.out.println(csvRecord.get("name") + " : " + csvRecord.get("age"));
-                System.out.println(csvRecord.get("Title")+" "+csvRecord.get("Story")+" "+csvRecord.get("UserId"));
-                Content content = new Content();
-                content.setStory(csvRecord.get("Story"));
-                content.setTitle(csvRecord.get("Title"));
-                content.setuserEmailId(csvRecord.get("UserId"));
-                LocalDateTime localDateTime = LocalDateTime.now();
-                content.setLastModifiedDate(localDateTime);
-                content.setDateOfPublished(localDateTime);
-
-                contentRepository.save(content);
-
-
+    public ResponseEntity<?> uploadDataFromCSVToDB(MultipartFile file,HttpServletRequest request) {
+        String JWT=extractJWTFromHTTPHeader(request);
+        String emailId=extractEmailIdFromHTTPHeader(request);
+        String role=extractRoleFromHTTPHeader(request);
+        if(role.equals("ADMIN")){
+            if (file.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(" The sent file is empty",null));
             }
-
-            return ResponseEntity.ok("Data ingested successfully");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body("Failed to ingest data from the CSV file.");
-        } catch (Exception e) {
+            try {
+                Resource resource = new ClassPathResource(".");
+                String uploadsPath = resource.getFile().getAbsolutePath() + File.separator ;
+                File uploadedFile = new File(uploadsPath, "content_file.csv");
+                file.transferTo(uploadedFile);
+            } catch (IOException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response(" Unable to store the file in the location",null));
+            }
+            JobParameters jobParameters = new JobParametersBuilder()
+                    .addLong("startAt", System.currentTimeMillis())
+                    .toJobParameters();
+            try {
+                jobLauncher.run(job, jobParameters);
+            } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
+                     JobParametersInvalidException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response(" Unable complete the Job, Unable to add contents to databse.",null));
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(new Response(" Successfully added the contents from csv to database.",null));
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response("Users not allowed to upload CSV, only Admins can upload csv data.",null));
 
         }
-
-
-        return null;
     }
 
     public ResponseEntity getContent(String contentId) {
