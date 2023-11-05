@@ -139,7 +139,6 @@ public class ContentService {
         }
         else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response("Users not allowed to upload CSV, only Admins can upload csv data.",null));
-
         }
     }
 

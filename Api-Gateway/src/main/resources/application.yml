@@ -22,6 +22,17 @@ spring:
           filters:
             - AuthenticationFilter
 
+        ## service3
+
+        - id: USER-INTERACTION-SERVICE
+          uri: lb://USER-INTERACTION-SERVICE
+          predicates:
+            - Path=/userInteractionService/**
+          filters:
+            - AuthenticationFilter
+
+
+
 #        ## Service2
 #        - id: service2
 #          uri: lb://service2

@@ -43,28 +43,27 @@ public class UserController {
     private TokenBlacklistService tokenBlacklistService;
 
 
-    @GetMapping("")
-    public ResponseEntity<?> check(){
-        return ResponseEntity.status(HttpStatus.OK).body("inside user service");
-    }
+
 
 
     @GetMapping("/health")
     public ResponseEntity<?> health(HttpServletRequest request) {
-        String bearer=request.getHeader("Authorization");
-        String s=bearer.substring(7);
-        String str = jwtUtil.extractAllClaims(s).get("role",String.class);
-        System.out.println("line 45 role: "+str);
-//        tokenBlacklistService.blacklistToken(s);
-//        tokenBlacklistService.isTokenBlacklisted(s);
-        System.out.println("line 53");
-        if (str.equals("ADMIN")) {
+//        String bearer=request.getHeader("Authorization");
+//        String s=bearer.substring(7);
+//        String str = jwtUtil.extractAllClaims(s).get("role",String.class);
+//        System.out.println("line 45 role: "+str);
+////        tokenBlacklistService.blacklistToken(s);
+////        tokenBlacklistService.isTokenBlacklisted(s);
+//        System.out.println("line 53");
+//        if (str.equals("ADMIN")) {
+//
+//
+//        }
+//        else{
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unable to access");
+//        }
 
-            return ResponseEntity.status(HttpStatus.OK).body("User Service Up and Running...!");
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unable to access");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body("User Service Up and Running...!");
 
     }
 

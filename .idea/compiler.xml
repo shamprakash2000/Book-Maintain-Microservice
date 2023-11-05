@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Eureka-Server" />
+        <module name="User_Interaction_Service" />
         <module name="Api-Gateway" />
         <module name="Content_Service" />
         <module name="User_Service" />
@@ -24,6 +25,7 @@
       <module name="Content_Service (1)" options="-parameters" />
       <module name="Content_Service (2)" options="-parameters" />
       <module name="Eureka-Server" options="-parameters" />
+      <module name="User_Interaction_Service" options="-parameters" />
       <module name="User_Service" options="-parameters" />
     </option>
   </component>
