@@ -22,8 +22,6 @@ public class InteractionCount {
         this.count = count;
     }
 
-
-
     public String getContentId() {
         return contentId;
     }

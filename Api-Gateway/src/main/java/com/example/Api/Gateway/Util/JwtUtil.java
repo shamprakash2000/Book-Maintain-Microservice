@@ -1,32 +1,17 @@
 package com.example.Api.Gateway.Util;
-
-
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
-
 
 @Service
 public class JwtUtil {
 
-//    @Autowired
-//    private UserRepository userRepository;
 
     @Value("${jwt.secret}")
     private String SECRET_KEY ;
-
-
-
 
 
     public String extractUsername(String token) {
@@ -50,7 +35,6 @@ public class JwtUtil {
     }
 
 
-
     public Boolean validateToken(String token) {
         final String username = extractUsername(token);
         if(username!=null){
@@ -58,5 +42,6 @@ public class JwtUtil {
         }
         else{
             return false;
-        }}
+        }
+    }
 }
