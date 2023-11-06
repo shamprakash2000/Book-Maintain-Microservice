@@ -25,7 +25,6 @@ public class ContentController {
     }
     @PostMapping("/addContent")
     public ResponseEntity<?> create(@RequestBody Content content, HttpServletRequest request){
-        System.out.println("line 37");
         return contentService.insertContent(content,request);
     }
     @GetMapping("/get/{contentId}")

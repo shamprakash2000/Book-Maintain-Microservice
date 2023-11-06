@@ -28,11 +28,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
     @Override
     public GatewayFilter apply(Config config) {
-        System.out.println("gateway filter");
         return ((exchange,chain)->{
             if(validator.isSecured.test(exchange.getRequest())){
                 if(!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)){
-                    System.out.println("missing auth header line 30");
                     exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
                     return ServerResponse.status(HttpStatus.FORBIDDEN).build().then();
                     //throw new RuntimeException("missing authorization header");
@@ -41,13 +39,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 String authHeader = exchange.getRequest().getHeaders().get(org.springframework.http.HttpHeaders.AUTHORIZATION).get(0);
                 String JWT=authHeader.substring(7);
                 if(tokenBlacklistService.isTokenBlacklisted(JWT)){
-                    System.out.println("line 44");
                     exchange.getResponse().setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
                     return ServerResponse.status(HttpStatus.FORBIDDEN).build().then();
                 }
                 if(authHeader!=null && authHeader.startsWith("Bearer ")){
                     authHeader=authHeader.substring(7);
-                    System.out.println("line 34 : "+authHeader);
                 }
                 try{
                     jwtUtil.validateToken(authHeader);
@@ -60,7 +56,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 }
             }
 
-            System.out.println("Leaving AuthenticationFilter");
             return chain.filter(exchange);
         });
     }
