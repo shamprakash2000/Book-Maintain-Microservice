@@ -27,30 +27,22 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtFilter jwtFilter;
 
-//    @Bean
-//    public AccessDeniedHandler accessDeniedHandler() {
-//        return new CustomAccessDeniedHandler();
-//    }
 
-//    @Bean
-//    public AccessDeniedHandler accessDeniedHandler() {
-//        return new CustomAccessDeniedHandler();
-//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().antMatchers("/userService/api","/userService/api/login","/userService/api/signUp").permitAll()
+        http.csrf().disable().authorizeRequests().antMatchers("/userService/api/health","/userService/api/login","/userService/api/signUp").permitAll()
                 .anyRequest().authenticated().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        //http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
+
        http.addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
-        //http.addFilterAfter(jwtFilter,UsernamePasswordAuthenticationFilter.class);
+
 
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        super.configure(auth);
+
 
 
 
@@ -62,11 +54,6 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter {
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
     }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder(){
-//        return NoOpPasswordEncoder.getInstance();
-//    }
 
 
     @Bean

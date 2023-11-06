@@ -18,6 +18,7 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.file.FileSystem;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +126,7 @@ public class ContentService {
             try {
                 Resource resource = new ClassPathResource(".");
                 String uploadsPath = resource.getFile().getAbsolutePath() + File.separator ;
+
                 File uploadedFile = new File(uploadsPath, "content_file.csv");
                 file.transferTo(uploadedFile);
             } catch (IOException e) {

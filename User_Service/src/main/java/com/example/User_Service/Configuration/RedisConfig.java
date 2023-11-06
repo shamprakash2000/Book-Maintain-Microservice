@@ -35,14 +35,14 @@ public class RedisConfig {
 
     @Bean
     public RedisCacheManager cacheManager() {
-        // Configure the expiration time for the blacklist cache
+
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60)); // Set the expiration time to 30 minutes
+                .entryTtl(Duration.ofMinutes(300));
 
         return RedisCacheManager.builder(jedisConnectionFactory())
                 .cacheDefaults(cacheConfiguration)
                 .build();
 
-        //return RedisCacheManager.builder(jedisConnectionFactory()).build();
+
     }
 }
