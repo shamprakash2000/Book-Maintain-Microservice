@@ -5,9 +5,6 @@ import com.example.Content_Service.Model.Content;
 import com.example.Content_Service.Repository.ContentRepository;
 import com.example.Content_Service.Response.Response;
 import com.example.Content_Service.Util.JwtUtil;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -18,7 +15,6 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,18 +27,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
+
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.file.FileSystem;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -151,8 +142,12 @@ public class ContentService {
     public ResponseEntity getContent(String contentId) {
         Optional<Content> content= contentRepository.findById(contentId);
 
-        if(!content.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Couldnot find requested content.",content));
+        if(!content.isPresent() ){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Couldnot find requested content.",null));
+        }
+
+        if(content.get().isContentDeleted()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response("Couldnot find requested content.",null));
         }
         return ResponseEntity.status(HttpStatus.OK).body(new Response("Successfully fetched",content));
 

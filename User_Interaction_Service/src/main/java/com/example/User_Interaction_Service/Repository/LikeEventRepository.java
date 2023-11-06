@@ -11,7 +11,7 @@ public interface LikeEventRepository  extends MongoRepository<LikeEvent, String>
 
     Optional<LikeEvent> findByContentIdAndUserEmailId(String contentId,String emailId);
     void deleteByContentIdAndUserEmailId(String contentId,String emailId);
-//    List<LikeEvent> findAllByContentId(String contentId);
+
 }
 
 

@@ -1,6 +1,7 @@
 package com.example.Content_Service.Util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,7 +19,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtUtil {
 
 
-    private String SECRET_KEY = "secret";
+    @Value("${jwt.secret}")
+    private String SECRET_KEY ;
 
 
     public String extractUsername(String token) {
@@ -38,28 +40,4 @@ public class JwtUtil {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-
-
-    private String createToken(Map<String, Object> claims, String subject) {
-
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60*48))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
-    }
-
-    public Boolean validateToken(String token) {
-        final String username = extractUsername(token);
-        if(username!=null){
-            return true;
-        }
-        else{
-            return false;
-        }
-        //return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-        //return (username.equals(userDetails.getEmailId()) && !isTokenExpired(token));
-    }
 }

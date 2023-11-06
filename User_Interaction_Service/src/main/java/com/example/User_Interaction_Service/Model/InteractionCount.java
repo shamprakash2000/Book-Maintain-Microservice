@@ -6,8 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class InteractionCount {
 
-//    @Id
-//    private String id;
+
 
     @Id
     private String contentId;
@@ -23,13 +22,7 @@ public class InteractionCount {
         this.count = count;
     }
 
-//    public String getId() {
-//        return id;
-//    }
-//
-//    public void setId(String id) {
-//        this.id = id;
-//    }
+
 
     public String getContentId() {
         return contentId;

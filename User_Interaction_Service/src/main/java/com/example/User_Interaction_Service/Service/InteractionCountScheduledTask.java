@@ -1,7 +1,6 @@
 package com.example.User_Interaction_Service.Service;
 
 
-
 import com.example.User_Interaction_Service.Model.InteractionCount;
 import com.example.User_Interaction_Service.Model.LikeEvent;
 import com.example.User_Interaction_Service.Model.ReadEvent;
@@ -10,7 +9,7 @@ import com.example.User_Interaction_Service.Repository.LikeEventRepository;
 import com.example.User_Interaction_Service.Repository.ReadEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-        import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -30,8 +29,8 @@ public class InteractionCountScheduledTask {
     @Autowired
     private InteractionCountRepository interactionCountRepository;
 
-    // Run this method every 5 minutes
-    @Scheduled(fixedRate = 1000*60*5)
+    // Run this method every 3 minutes
+    @Scheduled(fixedRate = 1000 * 60 * 3)
     public void runScheduledTask() {
         System.out.println("Scheduled task executed at: " + System.currentTimeMillis());
         List<LikeEvent> likeEvents = likeEventRepository.findAll();
@@ -60,11 +59,9 @@ public class InteractionCountScheduledTask {
                 ));
 
         for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
-            System.out.println("key : "+ entry.getKey());
-            InteractionCount fetchInteraction = interactionCountRepository.findByContentId(entry.getKey());
-            InteractionCount interactionCount=new InteractionCount(entry.getKey(), entry.getValue());
-            InteractionCount i=interactionCountRepository.save(interactionCount);
-            System.out.println(i.getContentId());
+            InteractionCount interactionCount = new InteractionCount(entry.getKey(), entry.getValue());
+            interactionCountRepository.save(interactionCount);
+
 
         }
     }

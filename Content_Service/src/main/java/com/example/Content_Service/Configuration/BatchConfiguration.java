@@ -38,9 +38,9 @@ public class BatchConfiguration {
     public FlatFileItemReader<Content> reader() {
 
         FlatFileItemReader<Content> itemReader = new FlatFileItemReader<>();
-//        new FileSystemResource("src/main/resources/content_file.csv")
+//        new FileSystemResource("resources/content_file.csv")
 
-        itemReader.setResource( new ClassPathResource("content_file.csv"));
+        itemReader.setResource(new FileSystemResource("resources/contentfile.csv"));
         itemReader.setName("csvReader");
         itemReader.setStrict(false);
         itemReader.setLinesToSkip(1);
@@ -76,7 +76,7 @@ public class BatchConfiguration {
             writer.setMethodName("save");
         }
         catch(Exception e){
-
+            System.out.println("Unable to add content to database through Job.");
         }
 
         return writer;

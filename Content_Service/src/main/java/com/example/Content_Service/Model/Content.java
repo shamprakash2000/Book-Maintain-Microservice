@@ -1,13 +1,12 @@
 package com.example.Content_Service.Model;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Document
 public class Content {
@@ -41,7 +40,7 @@ public class Content {
         isUploadedByAdmin = uploadedByAdmin;
     }
 
-// Constructors, getters, and setters
+
 
     public Content() {
     }
