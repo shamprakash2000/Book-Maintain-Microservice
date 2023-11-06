@@ -39,8 +39,9 @@ public class BatchConfiguration {
 
         FlatFileItemReader<Content> itemReader = new FlatFileItemReader<>();
 //        new FileSystemResource("resources/content_file.csv")
+//        new ClassPathResource("content_file.csv")
 
-        itemReader.setResource(new FileSystemResource("resources/contentfile.csv"));
+        itemReader.setResource( new FileSystemResource("tmp/content_file.csv"));
         itemReader.setName("csvReader");
         itemReader.setStrict(false);
         itemReader.setLinesToSkip(1);

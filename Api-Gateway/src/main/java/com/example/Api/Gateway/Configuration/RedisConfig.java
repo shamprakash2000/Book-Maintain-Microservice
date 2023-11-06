@@ -1,5 +1,6 @@
 package com.example.Api.Gateway.Configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +18,13 @@ import java.time.Duration;
 @Configuration
 public class RedisConfig {
 
+    @Value("${spring.redis.host}")
+    String REDIS_HOST;
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         JedisConnectionFactory factory = new JedisConnectionFactory();
-        factory.setHostName("localhost"); // Redis server host
+        factory.setHostName(REDIS_HOST); // Redis server host
         factory.setPort(6379); // Redis server port
         return factory;
     }
@@ -38,7 +42,7 @@ public class RedisConfig {
     public RedisCacheManager cacheManager() {
         // Configure the expiration time for the blacklist cache
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60)); // Set the expiration time to 30 minutes
+                .entryTtl(Duration.ofMinutes(300)); // Set the expiration time to 30 minutes
 
         return RedisCacheManager.builder(jedisConnectionFactory())
                 .cacheDefaults(cacheConfiguration)

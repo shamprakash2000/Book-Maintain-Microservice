@@ -14,6 +14,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -50,6 +51,9 @@ public class ContentService {
 
     @Autowired
     MongoTemplate mongoTemplate;
+
+    @Value("spring.boot.user.interaction.url")
+    String clientURL;
 
     @Autowired
     private JobLauncher jobLauncher;
@@ -115,10 +119,10 @@ public class ContentService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(" The sent file is empty",null));
             }
             try {
-                Resource resource = new ClassPathResource(".");
-                String uploadsPath = resource.getFile().getAbsolutePath() + File.separator ;
+//                Resource resource = new ClassPathResource(".");
+//                String uploadsPath = resource.getFile().getAbsolutePath() + File.separator ;
 
-                File uploadedFile = new File(uploadsPath, "content_file.csv");
+                File uploadedFile = new File("/tmp/content_file.csv");
                 file.transferTo(uploadedFile);
             } catch (IOException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response(" Unable to store the file in the location",null));
@@ -310,7 +314,7 @@ public class ContentService {
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<List> response = restTemplate.exchange(
-                "http://localhost:8083/userInteractionService/api/topContents",
+                clientURL,
                 HttpMethod.GET, null, List.class);
 
         List<String> list=response.getBody();

@@ -1,0 +1,73 @@
+version: "3.9"
+services:
+  redis:
+    hostname: redis
+    image: redis
+    ports:
+      - "6379:6379"
+
+  mongodb:
+    image: mongo
+    hostname: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+
+  eureka-server:
+    hostname: eureka-server
+    build: ./Eureka-Server
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    hostname: api-gateway
+    build: ./Api-Gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - eureka-server
+    environment:
+      - "EUREKA_HOST=eureka-server"
+      - "REDIS_HOST=redis"
+
+  content-service:
+    hostname: content-service
+    build: ./Content_Service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mongodb
+      - eureka-server
+      - api-gateway
+    environment:
+      - "MONGO_HOST=mongodb"
+      - "EUREKA_HOST=eureka-server"
+
+  user-service:
+    hostname: user-service
+    build: ./User_Service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+      - redis
+      - eureka-server
+      - api-gateway
+    environment:
+      - "MONGO_HOST=mongodb"
+      - "EUREKA_HOST=eureka-server"
+      - "REDIS_HOST=redis"
+
+  user-interaction-service:
+    hostname: user-interaction-service
+    build: ./User_Interaction_Service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mongodb
+      - eureka-server
+      - api-gateway
+    environment:
+      - "MONGO_HOST=mongodb"
+      - "EUREKA_HOST=eureka-server"
