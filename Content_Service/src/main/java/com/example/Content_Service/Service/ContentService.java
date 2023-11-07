@@ -15,6 +15,8 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -33,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +53,7 @@ public class ContentService {
     @Autowired
     MongoTemplate mongoTemplate;
 
-    @Value("spring.boot.user.interaction.url")
+    @Value("${spring.boot.user.interaction.url}")
     String clientURL;
 
     @Autowired
@@ -119,7 +122,9 @@ public class ContentService {
             try {
 //                Resource resource = new ClassPathResource(".");
 //                String uploadsPath = resource.getFile().getAbsolutePath() + File.separator ;
-
+//                System.out.println("line 125: "+uploadsPath);
+//
+//                File uploadedFile = new File(uploadsPath,"content_file.csv");
                 File uploadedFile = new File("/tmp/content_file.csv");
                 file.transferTo(uploadedFile);
             } catch (IOException e) {
@@ -311,9 +316,16 @@ public class ContentService {
     public ResponseEntity fetchTopContents() {
 
         RestTemplate restTemplate = new RestTemplate();
+        URI uri= URI.create(clientURL);
         ResponseEntity<List> response = restTemplate.exchange(
-                clientURL,
+                uri,
                 HttpMethod.GET, null, List.class);
+
+//        RestTemplate restTemplate = new RestTemplate();
+//        URI uri=URI.create("http://localhost:8083/userInteractionService/api/topContents");
+//        ResponseEntity<List> response = restTemplate.exchange(
+//                uri,
+//                HttpMethod.GET, null, List.class);
 
         List<String> list=response.getBody();
         List<Content> contentList=new ArrayList<>();

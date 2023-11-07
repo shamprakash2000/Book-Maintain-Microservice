@@ -15,13 +15,13 @@ services:
 
   eureka-server:
     hostname: eureka-server
-    build: ./Eureka-Server
+    image: shamprakash2000/eureka-server
     ports:
       - "8761:8761"
 
   api-gateway:
     hostname: api-gateway
-    build: ./Api-Gateway
+    image: shamprakash2000/api-gateway
     ports:
       - "8080:8080"
     depends_on:
@@ -33,7 +33,7 @@ services:
 
   content-service:
     hostname: content-service
-    build: ./Content_Service
+    image: shamprakash2000/content-service
     ports:
       - "8082:8082"
     depends_on:
@@ -43,10 +43,11 @@ services:
     environment:
       - "MONGO_HOST=mongodb"
       - "EUREKA_HOST=eureka-server"
+      - "USER_INTERACTION_HOST=user-interaction-service"
 
   user-service:
     hostname: user-service
-    build: ./User_Service
+    image: shamprakash2000/user-service
     ports:
       - "8081:8081"
     depends_on:
@@ -61,7 +62,7 @@ services:
 
   user-interaction-service:
     hostname: user-interaction-service
-    build: ./User_Interaction_Service
+    image: shamprakash2000/user-interaction-service
     ports:
       - "8083:8083"
     depends_on:

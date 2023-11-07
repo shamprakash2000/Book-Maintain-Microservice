@@ -16,6 +16,7 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
@@ -39,7 +40,7 @@ public class BatchConfiguration {
         FlatFileItemReader<Content> itemReader = new FlatFileItemReader<>();
 //        new FileSystemResource("resources/content_file.csv")
 //        new ClassPathResource("content_file.csv")
-
+        //itemReader.setResource( new ClassPathResource("content_file.csv"));
         itemReader.setResource( new FileSystemResource("tmp/content_file.csv"));
         itemReader.setName("csvReader");
         itemReader.setStrict(false);
